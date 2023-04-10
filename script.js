@@ -6,7 +6,7 @@ fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
 })
 .then(resp => resp.json())
 .then(result=>displayMap(result))
-.catch(error => console.log("Si è verificato un errore!" + error));
+.catch(error => console.log("Si è verificato un errore!: " + error));
 
 function displayMap(response) {
     results = response.features;
@@ -21,13 +21,16 @@ function displayMap(response) {
     }).addTo(map);
 
     for (let i = 0; i < results.length; i++) {
-        let circle = L.circle([results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
+
+        let circle = L.circleMarker([results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]], {
+            color: 'black',
+            fillColor: 'orange',
+            fillOpacity: 1,
+            radius: 7,
+            weight: 0.7
         }).addTo(map);
 
-        circle.bindPopup(results[i].properties["title"]);
+        let popupText = "<b>" + results[i].properties["title"] + "</b>";
+        circle.bindPopup(popupText);
     }
 }

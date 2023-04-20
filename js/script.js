@@ -93,4 +93,14 @@ function displayMap(response) {
 
         table_body.appendChild(tr);
     }
+
+    let places = document.getElementsByClassName("move-to");
+    
+    function moveTo() {
+        map.setView(new L.LatLng(results[10].geometry.coordinates[1], results[10].geometry.coordinates[0]), 13);
+    }
+
+    for (let i = 0; i < places.length; i++) {
+        places[i].addEventListener("click", moveTo);
+    }
 }

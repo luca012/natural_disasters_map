@@ -20,10 +20,18 @@ function displayMap(response) {
     results = response.features;
     console.log(results);
 
-    // aggiunge il layer di OpenStreetMap alla mappa creata (rende la mappa visibile al client in PNG)
+    // aggiunge i layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
+        minZoom: 1,
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    }).addTo(map);
+
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.png', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 19,
     }).addTo(map);
 
     for (let i = 0; i < results.length; i++) {
@@ -32,7 +40,7 @@ function displayMap(response) {
             color: 'black',
             fillColor: 'orange',
             fillOpacity: 1,
-            radius: 7,
+            radius: 6,
             weight: 0.7
         }).addTo(map);
 
@@ -91,7 +99,7 @@ function populateTable(results) {
 function moveTo(index) {
    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 15, {
         "animate": true,
-        "duration": 3
+        "duration": 7
     }); 
 }
 

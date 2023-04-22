@@ -1,6 +1,5 @@
 let results = [];
 
-
 fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson", 
 {
     "method": "GET",
@@ -9,13 +8,17 @@ fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson
 .then(result=>displayMap(result))
 .catch(error => console.log("Si è verificato un errore!: " + error));
 
-let map = L.map('map').setView([0, 0], 6);
+// genera la mappa settando latitudine, longitudine e zoom
+let map = L.map('map').setView([30, 0], 4);
+
+// crea l'istanza della sidebar e la aggiunge alla mappa
+let sidebar = L.control.sidebar({ container: 'sidebar' })
+.addTo(map)
+.open('home');
 
 function displayMap(response) {
     results = response.features;
-    console.log(results);   
-    // genera la mappa settando latitudine, longitudine e zoom
-    
+    console.log(results);
 
     // aggiunge il layer di OpenStreetMap alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -23,22 +26,6 @@ function displayMap(response) {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(map);
 
-    // crea l'istanza della sidebar e la aggiunge alla mappa
-        var sidebar = L.control.sidebar({ container: 'sidebar' })
-        .addTo(map)
-        .open('home');
-
-    // be notified when a panel is opened
-    /*
-    sidebar.on('content', function (ev) {
-        switch (ev.id) {
-            case 'autopan':
-            sidebar.options.autopan = true;
-            break;
-            default:
-            sidebar.options.autopan = false;
-        }
-    });*/
     for (let i = 0; i < results.length; i++) {
 
         let circle = L.circleMarker([results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]], {
@@ -80,6 +67,10 @@ function displayMap(response) {
         circle.bindPopup(popupText + "<br>" + popupLink);
     }
 
+    populateTable(results);
+}
+
+function populateTable(results) {
     let table_body = document.getElementById("table");
 
     for (let i = 0; i < results.length; i++) {
@@ -88,17 +79,43 @@ function displayMap(response) {
     let tr = document.createElement('tr');
 
     tr.innerHTML = `
-        <td> <button class="btn btn-primary" onclick="moveTo(${i})">${results[i].properties["place"]}</button> </td>
-        <td>${data}</td>  
+        
+        <td> <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">${results[i].properties["place"]}</button> </td>
+        <td>${data.toLocaleString()}</td> 
         <td>${((results[i].properties["mag"]).toFixed(2))} </td>
     `;
-
         table_body.appendChild(tr);
     }
 }
 
 function moveTo(index) {
-    console.log(index)
-    map.setView(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 16, {animation : true});
-    //map.panTo(new L.latLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 19);
+   map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 15, {
+        "animate": true,
+        "duration": 3
+    }); 
 }
+
+function sortTable() {
+    let table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("table");
+    
+    switching = true;
+
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 0; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("td")[2];
+        y = rows[i + 1].getElementsByTagName("td")[2];
+        if (Number(x.innerHTML) < Number(y.innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }

@@ -1,4 +1,4 @@
-let results = [];
+var results = [];
 
 fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson", 
 {
@@ -80,19 +80,19 @@ function displayMap(response) {
 
 function populateTable(results) {
     let table_body = document.getElementById("table");
+    table_body.innerHTML = "";
 
     for (let i = 0; i < results.length; i++) {
-    
-    let data = new Date(results[i].properties["time"]);
-    let tr = document.createElement('tr');
 
-    tr.innerHTML = `
-        
-        <td> <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">${results[i].properties["place"]}</button> </td>
-        <td>${data.toLocaleString()}</td> 
-        <td>${((results[i].properties["mag"]).toFixed(2))} </td>
-    `;
-        table_body.appendChild(tr);
+        let data = new Date(results[i].properties["time"]);
+        let tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td> <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">${results[i].properties["place"]}</button> </td>
+            <td>${data.toLocaleString()}</td> 
+            <td>${((results[i].properties["mag"]).toFixed(2))} </td>
+        `;
+            table_body.appendChild(tr);
     }
 }
 
@@ -104,26 +104,25 @@ function moveTo(index) {
 }
 
 function sortTable() {
-    let table, rows, switching, i, x, y, shouldSwitch;
-    table = document.getElementById("table");
-    
-    switching = true;
+    let selectValue = document.getElementById("sort").value;
+    let modified = [];
 
-    while (switching) {
-      switching = false;
-      rows = table.rows;
-      for (i = 0; i < (rows.length - 1); i++) {
-        shouldSwitch = false;
-        x = rows[i].getElementsByTagName("td")[2];
-        y = rows[i + 1].getElementsByTagName("td")[2];
-        if (Number(x.innerHTML) < Number(y.innerHTML)) {
-          shouldSwitch = true;
-          break;
-        }
-      }
-      if (shouldSwitch) {
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-      }
+    if (selectValue == 1) {    
+        modified = results.sort((a, b) => {
+            return b.properties["mag"] - a.properties["mag"]
+        });
+    } else if (selectValue == 2) {
+        modified = results.sort((a, b) => {
+            return a.properties["mag"] - b.properties["mag"]
+        });
+    } else if (selectValue == 3) {
+        modified = results.sort((a, b) => {
+            return (new Date(b.properties["time"])) - (new Date(a.properties["time"]))
+        });
+    } else if (selectValue == 4) {
+        modified = results.sort((a, b) => {
+            return (new Date(a.properties["time"])) - (new Date(b.properties["time"]))
+        });
     }
-  }
+    populateTable(modified);
+}

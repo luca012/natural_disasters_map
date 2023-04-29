@@ -1,6 +1,7 @@
 var results = [];
+var currentPage = Number(document.getElementById("page-number").innerHTML);
 
-fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson", 
+fetch("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2023-04-22&endtime=2023-04-29", 
 {
     "method": "GET",
 })
@@ -20,18 +21,18 @@ function displayMap(response) {
     results = response.features;
     console.log(results);
 
-    // aggiunge i layer alla mappa creata (rende la mappa visibile al client in PNG)
+    // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 19,
-        minZoom: 1,
+        maxZoom: 13,
+        minZoom: 2,
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(map);
 
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.png', {
         attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: 'abcd',
-        minZoom: 0,
-        maxZoom: 19,
+        maxZoom: 13,
+        minZoom: 2,
     }).addTo(map);
 
     for (let i = 0; i < results.length; i++) {
@@ -71,11 +72,11 @@ function displayMap(response) {
         }
 
         let popupText = "<b>" + results[i].properties["title"] + "</b>";
-        let popupLink = "<b> <a target='_blank' href='http://www.cnn.com'>Click here for details</a> </b>";
+        let popupLink = "<b> <a target='_blank' href='../html/details.html'>Click here for details</a> </b>";
         circle.bindPopup(popupText + "<br>" + popupLink);
     }
-
-    populateTable(results);
+    populateTable(results.slice(0, 10));
+    document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
 }
 
 function populateTable(results) {
@@ -85,10 +86,12 @@ function populateTable(results) {
     for (let i = 0; i < results.length; i++) {
 
         let data = new Date(results[i].properties["time"]);
-        let tr = document.createElement('tr');
+        let tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td> <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">${results[i].properties["place"]}</button> </td>
+            <td> 
+            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">
+                ${results[i].properties["place"]} </button> </td>
             <td>${data.toLocaleString()}</td> 
             <td>${((results[i].properties["mag"]).toFixed(2))} </td>
         `;
@@ -97,7 +100,7 @@ function populateTable(results) {
 }
 
 function moveTo(index) {
-   map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 15, {
+   map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 13, {
         "animate": true,
         "duration": 7
     }); 
@@ -107,7 +110,7 @@ function sortTable() {
     let selectValue = document.getElementById("sort").value;
     let modified = [];
 
-    if (selectValue == 1) {    
+    if (selectValue == 1) {
         modified = results.sort((a, b) => {
             return b.properties["mag"] - a.properties["mag"]
         });
@@ -124,5 +127,35 @@ function sortTable() {
             return (new Date(a.properties["time"])) - (new Date(b.properties["time"]))
         });
     }
-    populateTable(modified);
+    populateTable(modified.slice(0, 10));
+    currentPage = 1;
+    document.getElementById("page-number").innerHTML = "1 / " + Math.ceil(modified.length / 10);
+}
+
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        let pageResults = results.slice((currentPage - 1) * 10, currentPage * 10);
+        populateTable(pageResults);
+        document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
+    } else {
+        currentPage = Math.ceil(results.length / 10);
+        let pageResults = results.slice((currentPage - 1) * 10, currentPage * 10);
+        populateTable(pageResults);
+        document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
+    }
+}
+
+function nextPage() {
+    if (currentPage < results.length / 10) {
+        currentPage++;
+        let pageResults = results.slice((currentPage - 1) * 10, currentPage * 10);
+        populateTable(pageResults);
+        document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
+    } else {
+        currentPage = 1;
+        let pageResults = results.slice((currentPage - 1) * 10, currentPage * 10);
+        populateTable(pageResults);
+        document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
+    }
 }

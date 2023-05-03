@@ -16,9 +16,28 @@
   font-size: 130%;
 }
 
+a {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: small;
+}
+
 body {
   background-image: url("https://wallpaperset.com/w/full/f/d/8/32809.jpg");
 } 
+
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+  }
+  h4 {
+    font-size: 15px;
+  }
+}
 
 h1 {
   margin-top: 5%;

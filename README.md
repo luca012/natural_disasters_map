@@ -3,4 +3,4 @@ Natural disasters map with Leaflet and some APIs
 
 * [USGS Earthquake Hazards Program API documentation](https://earthquake.usgs.gov/fdsnws/event/1/)
 * [Leaflet](https://leafletjs.com/)
-* https://eonet.gsfc.nasa.gov/docs/v3
+* [NASA EONET]https://eonet.gsfc.nasa.gov/docs/v3

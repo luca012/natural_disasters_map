@@ -1,8 +1,9 @@
+let url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + startDate + "&endtime=" + endDate;
+
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
 
-fetch("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2023-04-22&endtime=2023-04-29", 
-{
+fetch(url, {
     "method": "GET",
 })
 .then(resp => resp.json())
@@ -100,7 +101,7 @@ function populateTable(results) {
 }
 
 function moveTo(index) {
-   map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 13, {
+    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 13, {
         "animate": true,
         "duration": 7
     }); 

@@ -1,5 +1,4 @@
-let url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + startDate + "&endtime=" + endDate;
-
+let url = "https://eonet.gsfc.nasa.gov/api/v3/events?category=wildfires%start=" + startDate + "&end=" + endDate;
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
 
@@ -30,10 +29,10 @@ function displayMap(response) {
     }).addTo(map);
 
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.png', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: 'abcd',
         maxZoom: 13,
         minZoom: 2,
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
     for (let i = 0; i < results.length; i++) {

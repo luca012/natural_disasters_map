@@ -23,11 +23,11 @@ td {
     justify-content: center;
     flex-wrap: wrap;
     padding: 5px;
-    font-size: large;
+    font-size: medium;
 }
 
 .underlined {
-    border-bottom: solid 1px white; 
+    border-bottom: solid 3px white;
 }
 
 li {

@@ -3,6 +3,9 @@ let url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&start
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
 
+document.getElementById("wildfires-link").href = "/html/wildfires.html?startDate=" + startDate + "&endDate=" + endDate + "";
+document.getElementById("floods-link").href = "/html/floods.html?startDate=" + startDate + "&endDate=" + endDate + "";
+
 fetch(url, {
     "method": "GET",
 })
@@ -12,7 +15,6 @@ fetch(url, {
 
 // genera la mappa settando latitudine, longitudine e zoom
 let map = L.map('map').setView([30, 0], 4);
-
 // crea l'istanza della sidebar e la aggiunge alla mappa
 let sidebar = L.control.sidebar({ container: 'sidebar' })
 .addTo(map)
@@ -21,7 +23,6 @@ let sidebar = L.control.sidebar({ container: 'sidebar' })
 function displayMap(response) {
     results = response.features;
     console.log(results);
-
     // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 13,

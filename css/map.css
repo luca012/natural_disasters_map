@@ -18,6 +18,7 @@ td {
 }
 
 .nav-cont {
+    font-family: 'Roboto', sans-serif;
     display: flex;
     list-style-type: none;
     justify-content: center;
@@ -30,7 +31,7 @@ td {
     border-bottom: solid 3px white;
 }
 
-li {
-    padding-left: 30px;
-    padding-right: 30px;
+.nav-item {
+    padding-left: 50px;
+    padding-right: 50px;
 }

@@ -1,0 +1,13 @@
+body {
+    background-image: url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallup.net%2Fwp-content%2Fuploads%2F2017%2F03%2F29%2F88808-volcano-lava-National_Geographic.jpg&f=1&nofb=1&ipt=d050c22e88ae1ec1ee7a346e2533df3f46a9d88a838ec1901fc21018fae4205a&ipo=images);
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+a:hover {
+    color: gray;
+}

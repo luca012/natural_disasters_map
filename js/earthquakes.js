@@ -13,12 +13,24 @@ fetch(url, {
 .then(result=>displayMap(result))
 .catch(error => console.log("Si è verificato un errore!: " + error));
 
+
+function getColor(mag) {
+    return mag < 1 ? 'grey' :
+           mag >= 1 & mag < 2 ? 'lightblue' :
+           mag >= 2 & mag < 4  ? 'yellow' :
+           mag >= 4 & mag < 5  ? 'orange' :
+           mag >= 5 & mag < 6  ? 'red' :
+           mag >= 6 ? 'darkred' :
+                      'white';
+}
+
 // genera la mappa settando latitudine, longitudine e zoom
 var map = L.map('map').setView([30, 0], 4);
 
 // crea l'istanza della sidebar e la aggiunge alla mappa
 var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
+// crea un layer di markers e li raggruppa in un cluster
 var markers = L.markerClusterGroup();
 
 function displayMap(response) {
@@ -48,32 +60,10 @@ function displayMap(response) {
             weight: 0.7
         });
 
-        if (results[i].properties["mag"] < 1) {
-            circle.setStyle({
-                fillColor: 'grey'
-            })
-        } else if (results[i].properties["mag"] >= 1 && results[i].properties["mag"] < 2) {
-            circle.setStyle({
-                fillColor: 'lightblue'
-            })
-        } else if (results[i].properties["mag"] >= 2 && results[i].properties["mag"] < 4) {
-            circle.setStyle({
-                fillColor: 'yellow'
-            })
-        } else if (results[i].properties["mag"] >= 4 && results[i].properties["mag"] < 5) {
-            circle.setStyle({
-                fillColor: 'orange'
-            })
-        } else if (results[i].properties["mag"] >= 5 && results[i].properties["mag"] < 6) {
-            circle.setStyle({
-                fillColor: 'red'
-            })
-        } else if (results[i].properties["mag"] >= 6) {
-            circle.setStyle({
-                fillColor: 'darkred'
-            })
-        }
-
+        circle.setStyle({
+            fillColor: getColor(results[i].properties["mag"])
+        });
+        
         markers.addLayer(circle);
 
         let popupText = "<b>" + results[i].properties["title"] + "</b>";

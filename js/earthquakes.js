@@ -14,25 +14,26 @@ fetch(url, {
 .catch(error => console.log("Si è verificato un errore!: " + error));
 
 // genera la mappa settando latitudine, longitudine e zoom
-let map = L.map('map').setView([30, 0], 4);
+var map = L.map('map').setView([30, 0], 4);
+
 // crea l'istanza della sidebar e la aggiunge alla mappa
-let sidebar = L.control.sidebar({ container: 'sidebar' })
-.addTo(map)
-.open('home');
+var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
+
+var markers = L.markerClusterGroup();
 
 function displayMap(response) {
+
     results = response.features;
-    console.log(results);
-    // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
+    // aggiunge layer alla mappa creata (rende la mappa visibile al client come immagine)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 13,
+        maxZoom: 16,
         minZoom: 2,
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(map);
 
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
-        maxZoom: 13,
+        maxZoom: 16,
         minZoom: 2,
         attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
@@ -45,7 +46,7 @@ function displayMap(response) {
             fillOpacity: 1,
             radius: 6,
             weight: 0.7
-        }).addTo(map);
+        });
 
         if (results[i].properties["mag"] < 1) {
             circle.setStyle({
@@ -73,10 +74,13 @@ function displayMap(response) {
             })
         }
 
+        markers.addLayer(circle);
+
         let popupText = "<b>" + results[i].properties["title"] + "</b>";
         let popupLink = "<b> <a target='_blank' href='../html/details.html'>Click here for details</a> </b>";
         circle.bindPopup(popupText + "<br>" + popupLink);
     }
+    map.addLayer(markers);
     populateTable(results.slice(0, 10));
     document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
 }

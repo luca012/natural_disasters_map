@@ -38,7 +38,7 @@ var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 1, 2, 4, 5, 6];
+        grades = [-1, 1, 2, 4, 5, 6];
     div.innerHTML += "<b>Magnitude</b><br><br>";
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=

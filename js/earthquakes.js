@@ -90,52 +90,59 @@ function populateTable(results) {
     table_body.innerHTML = "";
 
     for (let i = 0; i < results.length; i++) {
-
         let data = new Date(results[i].properties["time"]);
         let tr = document.createElement("tr");
-
         tr.innerHTML = `
             <td> 
-            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">
+            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo('${results[i].properties["code"]}')">
                 ${results[i].properties["place"]} </button> </td>
             <td>${data.toLocaleString()}</td> 
             <td>${((results[i].properties["mag"]).toFixed(2))} </td>
         `;
-            table_body.appendChild(tr);
+        table_body.appendChild(tr);
     }
 }
 
-function moveTo(index) {
-    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 13, {
+function moveTo(code) {
+    let index = null;
+    for (let i = 0; i < results.length; i++) {
+        if (results[i].properties["code"] == code) {
+            index = i;
+            break;
+        }
+    }
+
+    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 16, {
         "animate": true,
-        "duration": 7
-    }); 
+        "duration": 6
+    });
 }
 
 function sortTable() {
-    let selectValue = document.getElementById("sort").value;
-    let modified = [];
 
-    if (selectValue == 1) {
-        modified = results.sort((a, b) => {
+    let selectValue = document.getElementById("sort").value;
+    startIndex = 0;
+
+    if (selectValue == "mag-asc") {
+        results.sort((a, b) => {
             return b.properties["mag"] - a.properties["mag"]
         });
-    } else if (selectValue == 2) {
-        modified = results.sort((a, b) => {
+    } else if (selectValue == "mag-desc") {
+        results.sort((a, b) => {
             return a.properties["mag"] - b.properties["mag"]
         });
-    } else if (selectValue == 3) {
-        modified = results.sort((a, b) => {
+    } else if (selectValue == "newest") {
+        results.sort((a, b) => {
             return (new Date(b.properties["time"])) - (new Date(a.properties["time"]))
         });
-    } else if (selectValue == 4) {
-        modified = results.sort((a, b) => {
+    } else if (selectValue == "oldest") {
+        results.sort((a, b) => {
             return (new Date(a.properties["time"])) - (new Date(b.properties["time"]))
         });
-    }
-    populateTable(modified.slice(0, 10));
+    }   
+    populateTable(results.slice(0, 10));
     currentPage = 1;
-    document.getElementById("page-number").innerHTML = "1 / " + Math.ceil(modified.length / 10);
+    document.getElementById("page-number").innerHTML = "1 / " + Math.ceil(results.length / 10);
 }
 
 function previousPage() {

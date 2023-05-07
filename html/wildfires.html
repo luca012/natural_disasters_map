@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" crossorigin="" />
     <link rel="stylesheet" href="../css/leaflet-sidebar.css" />
     <link rel="stylesheet" href="../css/map.css" />
+    <link rel="stylesheet" href="../css/MarkerCluster.css" />
+    <link rel="stylesheet" href="../css/MarkerCluster.Default.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -15,11 +17,12 @@
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" crossorigin=""></script>
     <script src="../js/leaflet-sidebar.js"></script>
+    <script src="../js/leaflet.markercluster.js"></script>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-cont">
+    <nav class="navbar navbar-expand-lg navbar-light nav-cont">
         <a class="navbar-brand nav-cont" href="/index.html">
             <img src="https://img.icons8.com/color-glass/36/null/natural-food.png"/>
         </a>
@@ -48,8 +51,7 @@
             <ul role="tablist">
                 <li>
                     <a href="#home" role="tab"><i class="fa fa-bars active"></i>
-                        <img
-                            src="https://img.icons8.com/external-kosonicon-outline-kosonicon/30/null/external-earthquake-insurance-kosonicon-outline-kosonicon.png" />
+                        <img src="https://img.icons8.com/ios/30/null/wildfire.png"/>
                     </a>
                 </li>
             </ul>
@@ -61,8 +63,10 @@
             <div class="leaflet-sidebar-pane" id="home">
 
                 <h1 class="leaflet-sidebar-header">
-                    Earthquake Map
-                    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    Wildfires Map
+                    <span class="leaflet-sidebar-close">
+                        <img src="https://img.icons8.com/ios-filled/20/null/double-left.png"/>
+                    </span>
                 </h1>
 
                 <br>

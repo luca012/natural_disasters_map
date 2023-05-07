@@ -27,8 +27,16 @@ td {
     font-size: medium;
 }
 
+.navbar {
+    background-color: #0075D8;
+}
+
 .underlined {
     border-bottom: solid 3px white;
+}
+
+.nav-link {
+    color: white !important;
 }
 
 .nav-item {

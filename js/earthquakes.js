@@ -33,6 +33,25 @@ var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 // crea un layer di markers e li raggruppa in un cluster
 var markers = L.markerClusterGroup();
 
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 1, 2, 4, 5, 6];
+    div.innerHTML += "<b>Magnitude</b><br><br>";
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i]) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i+1] + '<br>' : '+') + '<br>';
+    }
+
+    return div;
+};
+
+legend.addTo(map);
+
+
 function displayMap(response) {
 
     results = response.features;

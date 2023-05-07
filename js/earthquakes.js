@@ -101,12 +101,15 @@ function populateTable(results) {
     for (let i = 0; i < results.length; i++) {
         let data = new Date(results[i].properties["time"]);
         let tr = document.createElement("tr");
+        
         let latLng = [results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]];
+        let place = results[i].properties["place"];
+        if (place == null) place = "Unknown location";
 
         tr.innerHTML = `
             <td> 
             <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${latLng})">
-                ${results[i].properties["place"]} </button> </td>
+                ${place} </button> </td>
             <td>${data.toLocaleString()}</td> 
             <td>${((results[i].properties["mag"]).toFixed(2))} </td>
         `;

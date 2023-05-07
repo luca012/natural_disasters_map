@@ -101,9 +101,11 @@ function populateTable(results) {
     for (let i = 0; i < results.length; i++) {
         let data = new Date(results[i].properties["time"]);
         let tr = document.createElement("tr");
+        let latLng = [results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]];
+
         tr.innerHTML = `
             <td> 
-            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo('${results[i].properties["code"]}')">
+            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${latLng})">
                 ${results[i].properties["place"]} </button> </td>
             <td>${data.toLocaleString()}</td> 
             <td>${((results[i].properties["mag"]).toFixed(2))} </td>
@@ -112,16 +114,9 @@ function populateTable(results) {
     }
 }
 
-function moveTo(code) {
-    let index = null;
-    for (let i = 0; i < results.length; i++) {
-        if (results[i].properties["code"] == code) {
-            index = i;
-            break;
-        }
-    }
-
-    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 16, {
+function moveTo(lat, lng) {
+    console.log(lat, lng);
+    map.flyTo(new L.LatLng(lat, lng), 16, {
         "animate": true,
         "duration": 6
     });
@@ -130,7 +125,6 @@ function moveTo(code) {
 function sortTable() {
 
     let selectValue = document.getElementById("sort").value;
-    startIndex = 0;
 
     if (selectValue == "mag-asc") {
         results.sort((a, b) => {

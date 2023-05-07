@@ -1,38 +1,62 @@
-let url = "https://eonet.gsfc.nasa.gov/api/v3/events?category=wildfires%start=" + startDate + "&end=" + endDate;
+function getDifferenceBetweenDates() {
+    return (new Date(endDate) - new Date(startDate)) / (1000 * 3600 * 24);
+}
+
+let url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/92317e974dc2057ade12ec3906a41677/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
+
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
+
+function csvToJSON(csv) {
+    var lines = csv.split("\n");
+    var js_object_response = [];
+    var headers = lines[0].split(",");
+    for (var i = 1; i < lines.length; i++) {
+        var obj = {};
+        var currentLine = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentLine[j];
+        }
+        js_object_response.push(obj);
+    }
+    return js_object_response;
+}
+
+document.getElementById("earthquakes-link").href = "/html/earthquakes.html?startDate=" + startDate + "&endDate=" + endDate + "";
+document.getElementById("floods-link").href = "/html/floods.html?startDate=" + startDate + "&endDate=" + endDate + "";
 
 fetch(url, {
     "method": "GET",
 })
-.then(resp => resp.json())
-.then(result=>displayMap(result))
+.then(resp => resp.text())
+.then(result => displayMap(csvToJSON(result)))
 .catch(error => console.log("Si è verificato un errore!: " + error));
 
 // genera la mappa settando latitudine, longitudine e zoom
-let map = L.map('map').setView([30, 0], 4);
+var map = L.map('map').setView([30, 0], 4);
 
 // crea l'istanza della sidebar e la aggiunge alla mappa
-let sidebar = L.control.sidebar({ container: 'sidebar' })
-.addTo(map)
-.open('home');
+var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
+
+// crea un layer di markers e li raggruppa in un cluster
 
 function displayMap(response) {
-    results = response.features;
-    console.log(results);
+    
+    results = response;
 
+    console.log(response);
     // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
         maxZoom: 13,
         minZoom: 2,
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(map);
 
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}{r}.png', {
         attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: 'abcd',
         maxZoom: 13,
-        minZoom: 2,
+        minZoom: 2, 
     }).addTo(map);
 
     for (let i = 0; i < results.length; i++) {

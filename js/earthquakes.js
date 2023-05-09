@@ -2,17 +2,20 @@ let url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&start
 
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
+var mapSpinner = document.getElementById("map-spinner");
+var mapDiv = document.getElementById("map");
 
 document.getElementById("wildfires-link").href = "/html/wildfires.html?startDate=" + startDate + "&endDate=" + endDate + "";
 document.getElementById("floods-link").href = "/html/floods.html?startDate=" + startDate + "&endDate=" + endDate + "";
 
+mapDiv.classList.add("blur");
+mapSpinner.style.display = "block";
 fetch(url, {
     "method": "GET",
 })
 .then(resp => resp.json())
 .then(result=>displayMap(result))
 .catch(error => console.log("Si è verificato un errore!: " + error));
-
 
 function getColor(mag) {
     return mag < 1 ? 'grey' :
@@ -23,7 +26,6 @@ function getColor(mag) {
            mag >= 6 ? 'darkred' :
                       'white';
 }
-
 // genera la mappa settando latitudine, longitudine e zoom
 var map = L.map('map').setView([30, 0], 4);
 
@@ -36,24 +38,22 @@ var markers = L.markerClusterGroup();
 var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info legend'),
-        grades = [-1, 1, 2, 4, 5, 6];
+    var div = L.DomUtil.create('div', 'info legend');
+    grades = [-1, 1, 2, 4, 5, 6];
     div.innerHTML += "<b>Magnitude</b><br><br>";
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
             '<i style="background:' + getColor(grades[i]) + '"></i> ' +
             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i+1] + '<br>' : '+') + '<br>';
     }
-
     return div;
 };
 
 legend.addTo(map);
 
-
 function displayMap(response) {
-
+    mapDiv.classList.remove("blur");
+    mapSpinner.style.display = "none";
     results = response.features;
     // aggiunge layer alla mappa creata (rende la mappa visibile al client come immagine)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -118,7 +118,6 @@ function populateTable(results) {
 }
 
 function moveTo(lat, lng) {
-    console.log(lat, lng);
     map.flyTo(new L.LatLng(lat, lng), 16, {
         "animate": true,
         "duration": 6
@@ -126,7 +125,6 @@ function moveTo(lat, lng) {
 }
 
 function sortTable() {
-
     let selectValue = document.getElementById("sort").value;
 
     if (selectValue == "mag-asc") {

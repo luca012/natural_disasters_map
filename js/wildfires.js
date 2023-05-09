@@ -147,11 +147,11 @@ async function populateTable(results) {
     }
 }
 
-function moveTo(index) {
-    map.flyTo(new L.LatLng(results[index].geometry.coordinates[1], results[index].geometry.coordinates[0]), 13, {
+function moveTo(lat, lng) {
+    map.flyTo(new L.LatLng(lat, lng), 13, {
         "animate": true,
-        "duration": 7
-    }); 
+        "duration": 6
+    });
 }
 
 function sortTable() {

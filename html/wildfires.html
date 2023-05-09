@@ -85,7 +85,7 @@
                 <br>
 
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table id="table-tag" class="table align-middle">
                         <thead>
                             <tr>
                                 <th style="text-align:center" scope="col">Location</th>
@@ -94,11 +94,14 @@
                             </tr>
                         </thead>
                         <tbody id="table">
-
                         </tbody>
                     </table>
                 </div>
-
+                
+                <div id="table-spinner" style="display:none; text-align: center;">
+                    <img src="../images/Spinner-1s-200px.svg" alt="Loading...">
+                </div>
+                
                 <div id="pagination">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
@@ -122,7 +125,10 @@
     </div>
 
     <div id="map">
+    </div>
 
+    <div class="center-screen" id="map-spinner" style="display:none;">
+        <img src="../images/Spinner-1s-200px.svg" alt="Loading...">
     </div>
     
     <script src="../js/utils.js"></script>

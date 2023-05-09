@@ -24,6 +24,11 @@ function getFormattedDate(date, time) {
 let url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/92317e974dc2057ade12ec3906a41677/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
+var mapSpinner = document.getElementById("map-spinner");
+var tableSpinner = document.getElementById("table-spinner");
+var mapDiv = document.getElementById("map");
+var tableTag = document.getElementById("table-tag");
+var paginationDiv = document.getElementById("pagination");
 
 function csvToJSON(csv) {
     var lines = csv.split("\n");
@@ -43,6 +48,8 @@ function csvToJSON(csv) {
 document.getElementById("earthquakes-link").href = "/html/earthquakes.html?startDate=" + startDate + "&endDate=" + endDate + "";
 document.getElementById("floods-link").href = "/html/floods.html?startDate=" + startDate + "&endDate=" + endDate + "";
 
+mapDiv.classList.add("blur");
+mapSpinner.style.display = "block";
 fetch(url, {
     "method": "GET",
 })
@@ -60,7 +67,8 @@ var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 var markers = L.markerClusterGroup();
 
 function displayMap(response) {
-    
+    mapDiv.classList.remove("blur");
+    mapSpinner.style.display = "none";
     results = response;
 
     console.log(response);
@@ -121,6 +129,9 @@ async function populateTable(results) {
         let geocodingUrl = "https://nominatim.openstreetmap.org/reverse?format=geojson&lat=" 
         + results[i].latitude + "&lon=" + results[i].longitude +"&zoom=10&addressdetails=0";
         
+        tableTag.classList.add("blur");
+        tableSpinner.style.display = "block";
+        paginationDiv.style.display = "none";
 
         const request = await fetch(geocodingUrl, {
             "method": "GET",
@@ -145,6 +156,9 @@ async function populateTable(results) {
     for (let i = 0; i < places.length; i++) {
         table_body.appendChild(places[i]);
     }
+    tableTag.classList.remove("blur");
+    tableSpinner.style.display = "none";
+    paginationDiv.style.display = "block";
 }
 
 function moveTo(lat, lng) {

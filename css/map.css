@@ -7,6 +7,10 @@ html, body, #map {
     height: 96.5%;
 }
 
+.blur {
+    filter: blur(5px);
+}
+
 td {
     text-align: center;
     vertical-align: middle;
@@ -25,6 +29,14 @@ td {
     flex-wrap: wrap;
     padding: 5px;
     font-size: medium;
+}
+
+.center-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 
 .navbar {

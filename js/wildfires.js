@@ -57,6 +57,7 @@ var map = L.map('map').setView([30, 0], 4);
 var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
 // crea un layer di markers e li raggruppa in un cluster
+var markers = L.markerClusterGroup();
 
 function displayMap(response) {
     
@@ -79,44 +80,32 @@ function displayMap(response) {
 
     for (let i = 0; i < results.length; i++) {
 
-        let circle = L.circleMarker([results[i].geometry.coordinates[1], results[i].geometry.coordinates[0]], {
+        let circle = L.circleMarker([results[i].latitude, results[i].longitude], {
             color: 'black',
-            fillColor: 'orange',
+            fillColor: 'red',
             fillOpacity: 1,
             radius: 6,
             weight: 0.7
-        }).addTo(map);
+        });
+        markers.addLayer(circle);
 
-        if (results[i].properties["mag"] < 1) {
-            circle.setStyle({
-                fillColor: 'grey'
-            })
-        } else if (results[i].properties["mag"] >= 1 && results[i].properties["mag"] < 2) {
-            circle.setStyle({
-                fillColor: 'lightblue'
-            })
-        } else if (results[i].properties["mag"] >= 2 && results[i].properties["mag"] < 4) {
-            circle.setStyle({
-                fillColor: 'yellow'
-            })
-        } else if (results[i].properties["mag"] >= 4 && results[i].properties["mag"] < 5) {
-            circle.setStyle({
-                fillColor: 'orange'
-            })
-        } else if (results[i].properties["mag"] >= 5 && results[i].properties["mag"] < 6) {
-            circle.setStyle({
-                fillColor: 'red'
-            })
-        } else if (results[i].properties["mag"] >= 6) {
-            circle.setStyle({
-                fillColor: 'darkred'
-            })
-        }
-
-        let popupText = "<b>" + results[i].properties["title"] + "</b>";
-        let popupLink = "<b> <a target='_blank' href='../html/details.html'>Click here for details</a> </b>";
-        circle.bindPopup(popupText + "<br>" + popupLink);
+        let popupText = "<b>Latitude: </b>" + results[i].latitude + "<br>" +
+        "<b>Longitude: </b>" + results[i].longitude + "<br>" +
+        "<b>DateTime: </b>" + getFormattedDate(results[i].acq_date, results[i].acq_time) + "<br>" +
+        "<b>Confidence: </b>" + results[i].confidence + "<br>" +
+        "<b>Frp: </b>" + results[i].frp + "<br>" +
+        "<b>Daynight: </b>" + results[i].daynight + "<br>" +
+        "<b>Satellite: </b>" + results[i].satellite + "<br>" +
+        "<b>Instrument: </b>" + results[i].instrument + "<br>" +
+        "<b>Version: </b>" + results[i].version + "<br>" +
+        "<b>Brightness: </b>" + results[i].bright_ti5 + "<br>" +
+        "<b>Scan: </b>" + results[i].scan + "<br>" +
+        "<b>Track: </b>" + results[i].track + "<br>"
+        "<b> <a href='https://www.earthdata.nasa.gov/learn/find-data/near-real-time/firms/viirs-i-band-375-m-active-fire-data'> Info about parameters </a> <br>";
+        circle.bindPopup(popupText);
     }
+    map.addLayer(markers);
+    
     populateTable(results.slice(0, 10));
     document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
 }

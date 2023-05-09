@@ -48,7 +48,7 @@ fetch(url, {
 })
 .then(resp => resp.text())
 .then(result => displayMap(csvToJSON(result)))
-.catch(error => console.log("Si è verificato un errore!: " + error));
+.catch(error => console.log("1) Si è verificato un errore!: " + error));
 
 // genera la mappa settando latitudine, longitudine e zoom
 var map = L.map('map').setView([30, 0], 4);
@@ -110,23 +110,40 @@ function displayMap(response) {
     document.getElementById("page-number").innerHTML = currentPage + " / " + Math.ceil(results.length / 10);
 }
 
-function populateTable(results) {
+async function populateTable(results) {
     let table_body = document.getElementById("table");
     table_body.innerHTML = "";
 
+    let places = [];
+    
     for (let i = 0; i < results.length; i++) {
 
-        let data = new Date(results[i].properties["time"]);
-        let tr = document.createElement("tr");
+        let geocodingUrl = "https://nominatim.openstreetmap.org/reverse?format=geojson&lat=" 
+        + results[i].latitude + "&lon=" + results[i].longitude +"&zoom=10&addressdetails=0";
+        
 
+        const request = await fetch(geocodingUrl, {
+            "method": "GET",
+        })
+
+        const geocodingResult = await request.json();
+
+        let formattedDate = getFormattedDate(results[i].acq_date, results[i].acq_time);
+        let tr = document.createElement("tr");
+        let latLng = [(results[i].latitude), (results[i].longitude)];
         tr.innerHTML = `
-            <td> 
-            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${i})">
-                ${results[i].properties["place"]} </button> </td>
-            <td>${data.toLocaleString()}</td> 
-            <td>${((results[i].properties["mag"]).toFixed(2))} </td>
+            <td>
+            <button style="font-size: 12px;" class="btn btn-outline-primary btn-sm" onclick="moveTo(${latLng})">
+                ${geocodingResult.features[0].properties.display_name}  </button> </td>
+            <td>${formattedDate}</td>
+            <td>${results[i].bright_ti5}</td>
         `;
-            table_body.appendChild(tr);
+        places.push(tr);
+    }
+
+
+    for (let i = 0; i < places.length; i++) {
+        table_body.appendChild(places[i]);
     }
 }
 

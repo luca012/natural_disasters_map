@@ -2,8 +2,26 @@ function getDifferenceBetweenDates() {
     return (new Date(endDate) - new Date(startDate)) / (1000 * 3600 * 24);
 }
 
-let url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/92317e974dc2057ade12ec3906a41677/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
+function convertTime(time) {
+    if (time.length == 1) {
+        time = "000" + time;
+    } else if (time.length == 2) {
+        time = "00" + time;
+    } else if (time.length == 3) {
+        time = "0" + time;
+    }
+    let hours = time.substring(0, 2);
+    let minutes = time.substring(2, 4);
 
+    return hours + ":" + minutes;
+}
+
+function getFormattedDate(date, time) {
+    let formatted = new Date(date + " " + convertTime(time));
+    return (formatted.toLocaleString()).substring(0, 15);
+}
+
+let url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/92317e974dc2057ade12ec3906a41677/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
 
@@ -134,21 +152,23 @@ function sortTable() {
     let selectValue = document.getElementById("sort").value;
     let modified = [];
 
-    if (selectValue == 1) {
+    if (selectValue == "bright-desc") {
         modified = results.sort((a, b) => {
-            return b.properties["mag"] - a.properties["mag"]
+            return b.bright_ti5 - a.bright_ti5
         });
-    } else if (selectValue == 2) {
+    } else if (selectValue == "bright-asc") {
         modified = results.sort((a, b) => {
-            return a.properties["mag"] - b.properties["mag"]
+            return a.bright_ti5 - b.bright_ti5
         });
-    } else if (selectValue == 3) {
+    } else if (selectValue == "newest") {
         modified = results.sort((a, b) => {
-            return (new Date(b.properties["time"])) - (new Date(a.properties["time"]))
+            return (new Date(getFormattedDate(b.acq_date, b.acq_time)) 
+            - (new Date(getFormattedDate(a.acq_date, a.acq_time))))
         });
-    } else if (selectValue == 4) {
+    } else if (selectValue == "oldest") {
         modified = results.sort((a, b) => {
-            return (new Date(a.properties["time"])) - (new Date(b.properties["time"]))
+            return (new Date(getFormattedDate(a.acq_date, a.acq_time)) 
+            - (new Date(getFormattedDate(b.acq_date, b.acq_time))))
         });
     }
     populateTable(modified.slice(0, 10));

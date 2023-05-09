@@ -1,6 +1,8 @@
 let url = "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?fromDate=" + startDate + "&toDate=" + endDate + "&alertlevel=Green;Orange;Red&eventlist=FL";
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
+var mapSpinner = document.getElementById("map-spinner");
+var mapDiv = document.getElementById("map");
 
 function getFormattedDate(date) {
     date = new Date(date);
@@ -10,6 +12,8 @@ function getFormattedDate(date) {
 document.getElementById("earthquakes-link").href = "/html/earthquakes.html?startDate=" + startDate + "&endDate=" + endDate + "";
 document.getElementById("wildfires-link").href = "/html/wildfires.html?startDate=" + startDate + "&endDate=" + endDate + "";
 
+mapDiv.classList.add("blur");
+mapSpinner.style.display = "block";
 fetch(url, {
     "method": "GET",
 })
@@ -52,7 +56,8 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 function displayMap(response) {
-
+    mapDiv.classList.remove("blur");
+    mapSpinner.style.display = "none";
     results = response.features;
     // aggiunge layer alla mappa creata (rende la mappa visibile al client come immagine)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {

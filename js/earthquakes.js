@@ -85,9 +85,12 @@ function displayMap(response) {
         
         markers.addLayer(circle);
 
-        let popupText = "<b>" + results[i].properties["title"] + "</b>";
-        let popupLink = "<b> <a target='_blank' href='../html/details.html'>Click here for details</a> </b>";
-        circle.bindPopup(popupText + "<br>" + popupLink);
+        let popupText = "<b>" + results[i].properties["title"] + "</b>" + "<br>" +
+        "<b>Latitude</b>" + ": " + results[i].geometry.coordinates[1] + "<br>" +
+        "<b>Longitude</b>" + ": " + results[i].geometry.coordinates[0] + "<br>" +
+        "<b>Depth</b>" + ": " + results[i].geometry.coordinates[2] + "<br>" +
+        "<b>Event type</b>" + ": " + results[i].properties["type"];
+        circle.bindPopup(popupText);
     }
     map.addLayer(markers);
     populateTable(results.slice(0, 10));

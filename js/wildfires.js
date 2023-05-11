@@ -71,7 +71,6 @@ function displayMap(response) {
     mapSpinner.style.display = "none";
     results = response;
 
-    console.log(response);
     // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
@@ -135,7 +134,7 @@ async function populateTable(results) {
 
         const request = await fetch(geocodingUrl, {
             "method": "GET",
-        })
+        }).catch(error => console.log("2) Si è verificato un errore!: " + error));
 
         const geocodingResult = await request.json();
 

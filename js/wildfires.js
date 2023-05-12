@@ -21,7 +21,7 @@ function getFormattedDate(date, time) {
     return (formatted.toLocaleString()).substring(0, 15);
 }
 
-let url = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/92317e974dc2057ade12ec3906a41677/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
+let url = "https://firms2.modaps.eosdis.nasa.gov/api/area/csv/c03d313cc71b715e1337f88841cf55e6/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
 var results = [];
 var currentPage = Number(document.getElementById("page-number").innerHTML);
 var mapSpinner = document.getElementById("map-spinner");
@@ -32,6 +32,7 @@ var paginationDiv = document.getElementById("pagination");
 
 function csvToJSON(csv) {
     var lines = csv.split("\n");
+    console.log(lines);
     var js_object_response = [];
     var headers = lines[0].split(",");
     for (var i = 1; i < lines.length; i++) {
@@ -70,6 +71,7 @@ function displayMap(response) {
     mapDiv.classList.remove("blur");
     mapSpinner.style.display = "none";
     results = response;
+    console.log(response);
 
     // aggiunge layer alla mappa creata (rende la mappa visibile al client in PNG)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {

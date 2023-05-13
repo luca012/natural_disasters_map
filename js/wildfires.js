@@ -1,5 +1,5 @@
 function getDifferenceBetweenDates() {
-    return (new Date(endDate) - new Date(startDate)) / (1000 * 3600 * 24);
+    return (new Date(endDate) - new Date(startDate)) / (1000 * 3600 * 24) + 1;
 }
 
 function convertTime(time) {
@@ -128,8 +128,8 @@ async function populateTable(results) {
     for (let i = 0; i < results.length; i++) {
 
         let geocodingUrl = "https://nominatim.openstreetmap.org/reverse?format=geojson&lat=" 
-        + results[i].latitude + "&lon=" + results[i].longitude +"&zoom=10&addressdetails=0";
-        
+        + results[i].latitude + "&lon=" + results[i].longitude +"&zoom=10&addressdetails=1";
+
         tableTag.classList.add("blur");
         tableSpinner.style.display = "block";
         paginationDiv.style.display = "none";
@@ -139,7 +139,7 @@ async function populateTable(results) {
         }).catch(error => console.log("2) Si è verificato un errore!: " + error));
 
         const geocodingResult = await request.json();
-
+        console.log(geocodingResult);
         let formattedDate = getFormattedDate(results[i].acq_date, results[i].acq_time);
         let tr = document.createElement("tr");
         let latLng = [(results[i].latitude), (results[i].longitude)];

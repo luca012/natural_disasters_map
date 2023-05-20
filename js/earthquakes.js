@@ -52,9 +52,11 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 function displayMap(response) {
+    console.log(response);
     mapDiv.classList.remove("blur");
     mapSpinner.style.display = "none";
     results = response.features;
+    console.log(results)
     // aggiunge layer alla mappa creata (rende la mappa visibile al client come immagine)
     L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 16,

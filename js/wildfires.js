@@ -3,6 +3,7 @@ function getDifferenceBetweenDates() {
 }
 
 function convertTime(time) {
+    
     if (time.length == 1) {
         time = "000" + time;
     } else if (time.length == 2) {
@@ -12,13 +13,13 @@ function convertTime(time) {
     }
     let hours = time.substring(0, 2);
     let minutes = time.substring(2, 4);
-
+    
     return hours + ":" + minutes;
 }
 
 function getFormattedDate(date, time) {
     let formatted = new Date(date + " " + convertTime(time));
-    return (formatted.toLocaleString()).substring(0, 15);
+    return (formatted.toLocaleString()).substring(0, 16);
 }
 
 let url = "https://firms2.modaps.eosdis.nasa.gov/api/area/csv/c03d313cc71b715e1337f88841cf55e6/VIIRS_SNPP_NRT/world/" + getDifferenceBetweenDates() + "/" + startDate + "/";
